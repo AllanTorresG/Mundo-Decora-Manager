@@ -1,0 +1,133 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+nav {
+  position: relative;
+  z-index: 10;
+  left: 0;
+  right: 0;
+  top: 0px;
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 0;
+  height: 150px;
+  margin-bottom: 20px;
+  background-color: #ffe876;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.1);
+}
+nav .logo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  width: 180px;
+  height: auto;
+  align-items: center;
+  filter: drop-shadow(3px 3px 3px rgba(0, 0, 0, 0.3));
+}
+
+.car {
+  width: 40px;
+  height: auto;
+  position: absolute;
+  top: 40%;
+  right: 20%;
+}
+
+.lupa {
+  width: 35px;
+  height: auto;
+  position: absolute;
+  top: 40%;
+  left: 20%;
+}
+
+.lupa:hover {
+  filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.3));
+}
+
+.car:hover {
+  filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.3));
+}
+
+.icon-bars {
+  display: none;
+  position: absolute;
+  left: 5%;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  z-index: 20;
+}
+
+.icon-bars .line {
+  width: 30px;
+  height: 5px;
+  background-color: black;
+  margin: 5px;
+  border-radius: 3px;
+  transition: all 0.3s ease-in-out;
+}
+
+@media (max-width: 1461px) {
+  .lupa {
+    width: 35px;
+    height: auto;
+    position: absolute;
+    top: 40%;
+    left: 10%;
+  }
+
+  .car {
+    width: 40px;
+    height: auto;
+    position: absolute;
+    top: 40%;
+    right: 10%;
+  }
+}
+
+@media (max-width: 920px) {
+  nav .logo {
+    width: 140px;
+  }
+}
+
+@media (max-width: 768px) {
+  nav {
+    height: 100px;
+  }
+
+  nav .logo {
+    width: 120px;
+  }
+
+  .lupa {
+    position: absolute;
+    width: 5%;
+    top: 30%;
+    left: 90%;
+  }
+
+  .car {
+    position: absolute;
+    width: 6%;
+    right: 5%;
+    top: 90px;
+  }
+
+  .icon-bars {
+    position: absolute;
+    display: block;
+  }
+
+  .search {
+    width: 50%;
+  }
+}
