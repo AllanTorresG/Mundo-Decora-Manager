@@ -2,6 +2,7 @@ import { useState } from "react";
 import CampoTexto from "./CampoTexto";
 import FormularioArreglo from "./formularioArreglo";
 import FormularioEvento from "./FormularioEvento";
+import PhoneInput from "./PhoneInput";
 
 const tipos = [
   { value: "arreglo", label: "Arreglo de globos", icon: "🎈" },
@@ -9,14 +10,14 @@ const tipos = [
 ];
 
 export default function PedidoForm({ form, handleChange, guardarPedido }) {
-  const [tipoAbierto, setTipoAbierto] = useState(false);
-
   return (
     <form onSubmit={guardarPedido} className="space-y-6">
       {/* Cliente y teléfono */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Nombre del cliente</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Nombre del cliente
+          </label>
           <CampoTexto
             name="cliente"
             value={form.cliente}
@@ -27,12 +28,13 @@ export default function PedidoForm({ form, handleChange, guardarPedido }) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Número de teléfono</label>
-          <CampoTexto
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Número de teléfono
+          </label>
+          <PhoneInput
             name="telefono"
             value={form.telefono}
             onChange={handleChange}
-            placeholder="10 dígitos"
             required
           />
         </div>
@@ -40,7 +42,9 @@ export default function PedidoForm({ form, handleChange, guardarPedido }) {
 
       {/* Tipo de pedido */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Tipo de pedido</label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Tipo de pedido
+        </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {tipos.map((t) => (
             <button
@@ -50,7 +54,6 @@ export default function PedidoForm({ form, handleChange, guardarPedido }) {
                 handleChange({
                   target: { name: "tipoPedido", value: t.value },
                 });
-                setTipoAbierto(true);
               }}
               className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 font-medium transition-all ${
                 form.tipoPedido === t.value
@@ -66,13 +69,13 @@ export default function PedidoForm({ form, handleChange, guardarPedido }) {
       </div>
 
       {/* Campos condicionales según tipo */}
-      {tipoAbierto && form.tipoPedido === "arreglo" && (
+      {form.tipoPedido === "arreglo" && (
         <div className="bg-gray-50 rounded-xl p-5 border border-gray-100">
           <FormularioArreglo form={form} handleChange={handleChange} />
         </div>
       )}
 
-      {tipoAbierto && form.tipoPedido === "evento" && (
+      {form.tipoPedido === "evento" && (
         <div className="bg-gray-50 rounded-xl p-5 border border-gray-100">
           <FormularioEvento form={form} handleChange={handleChange} />
         </div>

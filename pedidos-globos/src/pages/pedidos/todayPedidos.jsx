@@ -7,7 +7,13 @@ import ConfirmarEstado from "../../components/ConfirmarEstado";
 function calcularUrgencia(pedido, ahora) {
   if (pedido.tipoPedido === "arreglo") {
     const [h, m] = (pedido.horaEntrega || "0:0").split(":").map(Number);
-    const entrega = new Date(pedido.fecha + "T" + String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0"));
+    const entrega = new Date(
+      pedido.fecha +
+        "T" +
+        String(h).padStart(2, "0") +
+        ":" +
+        String(m).padStart(2, "0"),
+    );
     const diffMs = entrega - ahora;
 
     if (diffMs < 0) return "critical";
@@ -62,30 +68,34 @@ export default function PedidosDeHoy() {
       .then((data) => {
         const ahora = new Date();
 
-        const arreglosUrgentes = data.filter((pedido) => {
-          if (pedido.tipoPedido === "arreglo" && pedido.fecha === fechaHoy) {
-            return true;
-          }
+        const arreglosUrgentes = data
+          .filter((pedido) => {
+            if (pedido.tipoPedido === "arreglo" && pedido.fecha === fechaHoy) {
+              return true;
+            }
 
-          if (
-            pedido.tipoPedido === "arreglo" &&
-            pedido.fecha === fechaMañana &&
-            pedido.horaEntrega &&
-            horaAMinutos(pedido.horaEntrega) < horaAMinutos("12:00")
-          ) {
-            return true;
-          }
+            if (
+              pedido.tipoPedido === "arreglo" &&
+              pedido.fecha === fechaMañana &&
+              pedido.horaEntrega &&
+              horaAMinutos(pedido.horaEntrega) < horaAMinutos("12:00")
+            ) {
+              return true;
+            }
 
-          return false;
-        }).map((p) => ({ ...p, urgencia: calcularUrgencia(p, ahora) }));
+            return false;
+          })
+          .map((p) => ({ ...p, urgencia: calcularUrgencia(p, ahora) }));
 
-        const eventosSemana = data.filter((pedido) => {
-          return (
-            pedido.tipoPedido === "evento" &&
-            pedido.fecha >= fechaHoy &&
-            pedido.fecha <= fechaSemana
-          );
-        }).map((p) => ({ ...p, urgencia: calcularUrgencia(p, ahora) }));
+        const eventosSemana = data
+          .filter((pedido) => {
+            return (
+              pedido.tipoPedido === "evento" &&
+              pedido.fecha >= fechaHoy &&
+              pedido.fecha <= fechaSemana
+            );
+          })
+          .map((p) => ({ ...p, urgencia: calcularUrgencia(p, ahora) }));
 
         arreglosUrgentes.sort((a, b) => {
           const fechaHoraA = new Date(`${a.fecha}T${a.horaEntrega || "00:00"}`);
@@ -135,7 +145,9 @@ export default function PedidosDeHoy() {
   const resumenUrgencia = (tipo) => {
     const items = tipo === "arreglo" ? arreglos : eventos;
     const counts = { critical: 0, warning: 0, caution: 0, normal: 0 };
-    items.forEach((p) => { if (counts[p.urgencia] !== undefined) counts[p.urgencia]++; });
+    items.forEach((p) => {
+      if (counts[p.urgencia] !== undefined) counts[p.urgencia]++;
+    });
     return counts;
   };
 
@@ -171,23 +183,51 @@ export default function PedidosDeHoy() {
         {vistaActiva === "arreglos" && (
           <div>
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg font-bold text-gray-800">Arreglos urgentes</h2>
+              <h2 className="text-lg font-bold text-gray-800">
+                Arreglos urgentes
+              </h2>
               <div className="flex gap-1.5 text-xs flex-wrap">
-                {countsA.critical > 0 && <span className="px-2 py-1 rounded-full bg-red-100 text-red-700 font-medium">{countsA.critical} críticos</span>}
-                {countsA.warning > 0 && <span className="px-2 py-1 rounded-full bg-orange-100 text-orange-700 font-medium">{countsA.warning} próximos</span>}
-                {countsA.caution > 0 && <span className="px-2 py-1 rounded-full bg-yellow-100 text-yellow-700 font-medium">{countsA.caution} pendientes</span>}
+                {countsA.critical > 0 && (
+                  <span className="px-2 py-1 rounded-full bg-red-100 text-red-700 font-medium">
+                    {countsA.critical} críticos
+                  </span>
+                )}
+                {countsA.warning > 0 && (
+                  <span className="px-2 py-1 rounded-full bg-orange-100 text-orange-700 font-medium">
+                    {countsA.warning} próximos
+                  </span>
+                )}
+                {countsA.caution > 0 && (
+                  <span className="px-2 py-1 rounded-full bg-yellow-100 text-yellow-700 font-medium">
+                    {countsA.caution} pendientes
+                  </span>
+                )}
               </div>
             </div>
-            <ArregloTable pedidos={arreglos} onVerDetalle={setPedidoDetalle} cambiarEstado={cambiarEstado} />
+            <ArregloTable
+              pedidos={arreglos}
+              onVerDetalle={setPedidoDetalle}
+              cambiarEstado={cambiarEstado}
+            />
           </div>
         )}
         {vistaActiva === "eventos" && (
           <div>
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg font-bold text-gray-800">Eventos de la semana</h2>
+              <h2 className="text-lg font-bold text-gray-800">
+                Eventos de la semana
+              </h2>
               <div className="flex gap-1.5 text-xs flex-wrap">
-                {countsE.critical > 0 && <span className="px-2 py-1 rounded-full bg-red-100 text-red-700 font-medium">{countsE.critical} hoy</span>}
-                {countsE.warning > 0 && <span className="px-2 py-1 rounded-full bg-orange-100 text-orange-700 font-medium">{countsE.warning} mañana</span>}
+                {countsE.critical > 0 && (
+                  <span className="px-2 py-1 rounded-full bg-red-100 text-red-700 font-medium">
+                    {countsE.critical} hoy
+                  </span>
+                )}
+                {countsE.warning > 0 && (
+                  <span className="px-2 py-1 rounded-full bg-orange-100 text-orange-700 font-medium">
+                    {countsE.warning} mañana
+                  </span>
+                )}
               </div>
             </div>
             <EventoTable pedidos={eventos} onVerDetalle={setPedidoDetalle} />
@@ -200,13 +240,29 @@ export default function PedidosDeHoy() {
         <div>
           <div className="flex items-center justify-between mb-2">
             <div>
-              <h2 className="text-xl font-bold text-gray-800">🎈 Arreglos urgentes</h2>
-              <p className="text-sm text-gray-500">Hoy y mañana antes de las 12 PM</p>
+              <h2 className="text-xl font-bold text-gray-800">
+                🎈 Arreglos urgentes
+              </h2>
+              <p className="text-sm text-gray-500">
+                Hoy y mañana antes de las 12 PM
+              </p>
             </div>
             <div className="flex gap-2 text-xs flex-wrap">
-              {countsA.critical > 0 && <span className="px-2 py-1 rounded-full bg-red-100 text-red-700 font-medium">{countsA.critical} críticos</span>}
-              {countsA.warning > 0 && <span className="px-2 py-1 rounded-full bg-orange-100 text-orange-700 font-medium">{countsA.warning} próximos</span>}
-              {countsA.caution > 0 && <span className="px-2 py-1 rounded-full bg-yellow-100 text-yellow-700 font-medium">{countsA.caution} pendientes</span>}
+              {countsA.critical > 0 && (
+                <span className="px-2 py-1 rounded-full bg-red-100 text-red-700 font-medium">
+                  {countsA.critical} críticos
+                </span>
+              )}
+              {countsA.warning > 0 && (
+                <span className="px-2 py-1 rounded-full bg-orange-100 text-orange-700 font-medium">
+                  {countsA.warning} próximos
+                </span>
+              )}
+              {countsA.caution > 0 && (
+                <span className="px-2 py-1 rounded-full bg-yellow-100 text-yellow-700 font-medium">
+                  {countsA.caution} pendientes
+                </span>
+              )}
             </div>
           </div>
           <ArregloTable pedidos={arreglos} cambiarEstado={cambiarEstado} />
@@ -215,12 +271,24 @@ export default function PedidosDeHoy() {
         <div>
           <div className="flex items-center justify-between mb-2">
             <div>
-              <h2 className="text-xl font-bold text-gray-800">🎉 Eventos de la semana</h2>
-              <p className="text-sm text-gray-500">Del {fechaHoy} al {fechaSemana}</p>
+              <h2 className="text-xl font-bold text-gray-800">
+                🎉 Eventos de la semana
+              </h2>
+              <p className="text-sm text-gray-500">
+                Del {fechaHoy} al {fechaSemana}
+              </p>
             </div>
             <div className="flex gap-2 text-xs flex-wrap">
-              {countsE.critical > 0 && <span className="px-2 py-1 rounded-full bg-red-100 text-red-700 font-medium">{countsE.critical} hoy</span>}
-              {countsE.warning > 0 && <span className="px-2 py-1 rounded-full bg-orange-100 text-orange-700 font-medium">{countsE.warning} mañana</span>}
+              {countsE.critical > 0 && (
+                <span className="px-2 py-1 rounded-full bg-red-100 text-red-700 font-medium">
+                  {countsE.critical} hoy
+                </span>
+              )}
+              {countsE.warning > 0 && (
+                <span className="px-2 py-1 rounded-full bg-orange-100 text-orange-700 font-medium">
+                  {countsE.warning} mañana
+                </span>
+              )}
             </div>
           </div>
           <EventoTable pedidos={eventos} />

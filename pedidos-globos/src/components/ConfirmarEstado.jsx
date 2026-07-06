@@ -5,12 +5,12 @@ const fields = [
   { key: "tipoGas", label: "Tipo de gas", render: (v) => v },
   { key: "leyenda", label: "Leyenda", render: (v) => v },
   { key: "colores", label: "Colores", render: (v) => v },
-  { key: "descripcion", label: "Descripción", render: (v) => v },
+  { key: "extra", label: "Extras", render: (v) => v },
 ];
 
 export default function ConfirmarEstado({ pedido, onConfirmar, onCancelar }) {
   const [checks, setChecks] = useState(
-    Object.fromEntries(fields.map((f) => [f.key, false]))
+    Object.fromEntries(fields.map((f) => [f.key, false])),
   );
 
   const toggle = (key) => setChecks({ ...checks, [key]: !checks[key] });
@@ -26,16 +26,13 @@ export default function ConfirmarEstado({ pedido, onConfirmar, onCancelar }) {
         </div>
 
         <p className="text-sm text-gray-600 mb-4">
-          Se cambiará a <strong>"Listo para recoger"</strong>.
-          Confirma que cada dato del producto es correcto:
+          Se cambiará a <strong>"Listo para recoger"</strong>. Confirma que cada
+          dato del producto es correcto:
         </p>
 
         <div className="space-y-3 mb-6">
           {fields.map(({ key, label, render }) => (
-            <label
-              key={key}
-              className="flex items-start gap-3 cursor-pointer"
-            >
+            <label key={key} className="flex items-start gap-3 cursor-pointer">
               <input
                 type="checkbox"
                 checked={checks[key]}
@@ -43,7 +40,9 @@ export default function ConfirmarEstado({ pedido, onConfirmar, onCancelar }) {
                 className="mt-0.5 w-4 h-4 rounded border-gray-300 text-purple-600 focus:ring-purple-400 cursor-pointer"
               />
               <div className="flex-1 min-w-0">
-                <span className="block text-xs font-medium text-gray-500 mb-0.5">{label}</span>
+                <span className="block text-xs font-medium text-gray-500 mb-0.5">
+                  {label}
+                </span>
                 <span className="block text-sm text-gray-800 break-words">
                   {render(pedido[key]) || "—"}
                 </span>

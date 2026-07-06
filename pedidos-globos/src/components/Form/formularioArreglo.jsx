@@ -13,7 +13,9 @@ export default function FormularioArreglo({ form, handleChange }) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Fecha de entrega</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Fecha de entrega
+          </label>
           <CampoFecha
             name="fecha"
             value={form.fecha}
@@ -34,7 +36,9 @@ export default function FormularioArreglo({ form, handleChange }) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de arreglo</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Tipo de arreglo
+        </label>
         <select
           name="tipoArreglo"
           value={form.tipoArreglo}
@@ -49,8 +53,38 @@ export default function FormularioArreglo({ form, handleChange }) {
         </select>
       </div>
 
+      {form.tipoArreglo === "Globo burbuja" && (
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Tamaño del globo burbuja
+          </label>
+
+          <select
+            name="size"
+            value={form.size}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent outline-none transition text-gray-800 bg-white"
+          >
+            <option value="">Seleccionar</option>
+            <option value="Mini">Mini</option>
+            <option value="Chico">Chico</option>
+            <option value="Base mediana globo chico">
+              Base mediana (globo chico)
+            </option>
+            <option value="Mediano">Mediano</option>
+            <option value="Base grande globo mediano">
+              Base grande (globo mediano)
+            </option>
+            <option value="Grande">Grande</option>
+          </select>
+        </div>
+      )}
+
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de gas</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Tipo de gas
+        </label>
         <select
           name="tipoGas"
           value={form.tipoGas}
@@ -65,7 +99,9 @@ export default function FormularioArreglo({ form, handleChange }) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Leyenda</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Leyenda
+        </label>
         <CampoTexto
           name="leyenda"
           value={form.leyenda}
@@ -76,7 +112,9 @@ export default function FormularioArreglo({ form, handleChange }) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Colores</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Colores
+        </label>
         <CampoTexto
           name="colores"
           value={form.colores}
@@ -87,18 +125,21 @@ export default function FormularioArreglo({ form, handleChange }) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Descripción del arreglo</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Extras
+        </label>
         <CampoComentario
           name="descripcion"
           value={form.descripcion}
           placeholder="Colores, tamaño, tipo de globos..."
           onChange={handleChange}
-          required
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Servicio a domicilio</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Servicio a domicilio
+        </label>
         <select
           name="lugar"
           value={form.lugar}
@@ -114,7 +155,9 @@ export default function FormularioArreglo({ form, handleChange }) {
 
       {form.lugar === "Servicio a domicilio" && (
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Dirección de entrega</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Dirección de entrega
+          </label>
           <CampoTexto
             name="direccion"
             value={form.direccion}
@@ -126,7 +169,9 @@ export default function FormularioArreglo({ form, handleChange }) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Costo total</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Costo total
+          </label>
           <CampoDinero
             name="costo"
             value={form.costo}
@@ -137,7 +182,9 @@ export default function FormularioArreglo({ form, handleChange }) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Anticipo</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Anticipo
+          </label>
           <CampoDinero
             name="anticipo"
             value={form.anticipo}
@@ -149,7 +196,9 @@ export default function FormularioArreglo({ form, handleChange }) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Comentarios</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Comentarios
+        </label>
         <CampoComentario
           name="comentarios"
           value={form.comentarios}

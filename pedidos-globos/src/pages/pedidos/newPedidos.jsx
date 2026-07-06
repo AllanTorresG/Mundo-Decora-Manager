@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import PedidoForm from "../../components/Form/pedidoForm";
 
 export default function NuevoPedido() {
@@ -6,7 +6,9 @@ export default function NuevoPedido() {
     cliente: "",
     telefono: "",
     descripcion: "",
+    extra: "Ninguno",
     tipoArreglo: "",
+    size: "",
     tipoGas: "",
     leyenda: "",
     colores: "",
@@ -23,6 +25,28 @@ export default function NuevoPedido() {
     lugar: "",
     estado: "Agendado",
   });
+
+  useEffect(() => {
+    console.log("📄 NuevoPedido montado");
+    const draft = localStorage.getItem("draftOrder");
+
+    if (draft) {
+      console.log("📝 Borrador encontrado");
+      setForm(JSON.parse(draft));
+    }
+  }, []);
+
+  const firstRender = useRef(true);
+
+  useEffect(() => {
+    console.log("💾 Guardando borrador");
+
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    localStorage.setItem("draftOrder", JSON.stringify(form));
+  }, [form]);
 
   const handleChange = (e) => {
     setForm({
@@ -50,7 +74,9 @@ export default function NuevoPedido() {
       cliente: "",
       telefono: "",
       descripcion: "",
+      extra: "",
       tipoArreglo: "",
+      size: "",
       tipoGas: "",
       leyenda: "",
       colores: "",
@@ -68,6 +94,7 @@ export default function NuevoPedido() {
       estado: "Agendado",
     });
   };
+  console.log(form);
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -77,7 +104,9 @@ export default function NuevoPedido() {
           <span className="text-3xl">🎈</span>
         </div>
         <h1 className="text-3xl font-bold text-gray-800">Nuevo Pedido</h1>
-        <p className="text-gray-500 mt-1">Registra un nuevo pedido para tu cliente</p>
+        <p className="text-gray-500 mt-1">
+          Registra un nuevo pedido para tu cliente
+        </p>
       </div>
 
       {/* Card del formulario */}

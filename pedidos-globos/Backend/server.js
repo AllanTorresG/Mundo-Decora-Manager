@@ -1,6 +1,10 @@
 import express from "express";
 import cors from "cors";
 import fs from "fs";
+import {
+  iniciarWhatsApp,
+  sendConfirmation,
+} from "./services/whatsappService.js";
 
 const app = express();
 
@@ -26,7 +30,7 @@ app.get("/pedidos", (req, res) => {
   res.json(leerPedidos());
 });
 
-app.post("/pedidos", (req, res) => {
+app.post("/pedidos", async (req, res) => {
   const pedidos = leerPedidos();
 
   const nuevoPedido = {
@@ -37,6 +41,15 @@ app.post("/pedidos", (req, res) => {
   pedidos.push(nuevoPedido);
 
   guardarPedidos(pedidos);
+
+  try {
+    console.log("📤 Enviando confirmación...");
+    await sendConfirmation(nuevoPedido);
+    console.log("✅ Confirmación enviada");
+  } catch (error) {
+    console.error("❌ Error enviando confirmación:");
+    console.error(error);
+  }
 
   res.json(nuevoPedido);
 });
@@ -81,6 +94,8 @@ app.put("/pedidos/:id/estado/:estado", (req, res) => {
 
   res.json(pedido);
 });
+
+await iniciarWhatsApp();
 
 app.listen(3001, "0.0.0.0", () => {
   console.log("Servidor iniciado en puerto 3001");
