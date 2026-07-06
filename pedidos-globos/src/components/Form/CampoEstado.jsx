@@ -16,6 +16,7 @@ export default function CampoEstado({ value, onChange }) {
     >
       <option value="Agendado">Agendado</option>
       <option value="Listo para recoger">Listo para recoger</option>
+      <option value="Enviado">En reparto</option>
       <option value="Entregado">Entregado</option>
     </select>
   );

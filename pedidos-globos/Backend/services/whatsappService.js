@@ -3,6 +3,10 @@ import qrcode from "qrcode-terminal";
 import pino from "pino";
 import { orderConfirmation } from "./messages/orderConfirmation.js";
 import { eventConfirmation } from "./messages/eventConfirmation.js";
+import { readyToPickUp } from "./messages/readyToPickUp.js";
+import { readyToShip } from "./messages/readyToShip.js";
+import { onItsWay } from "./messages/onItsWay.js";
+import { delivered } from "./messages/delivered.js";
 
 let sock;
 
@@ -49,4 +53,25 @@ export async function sendConfirmation(pedido) {
       : eventConfirmation(pedido);
 
   await sendMessage(pedido.telefono, mensaje);
+}
+
+export async function sendStateChange(pedido) {
+  switch (pedido.estado) {
+    case "Listo para recoger": {
+      const message =
+        pedido.lugar === "Servicio a domicilio"
+          ? readyToShip(pedido)
+          : readyToPickUp(pedido);
+      await sendMessage(pedido.telefono, message);
+      break;
+    }
+
+    case "Enviado":
+      await sendMessage(pedido.telefono, onItsWay(pedido));
+      break;
+
+    case "Entregado":
+      await sendMessage(pedido.telefono, delivered(pedido));
+      break;
+  }
 }

@@ -4,6 +4,7 @@ import fs from "fs";
 import {
   iniciarWhatsApp,
   sendConfirmation,
+  sendStateChange,
 } from "./services/whatsappService.js";
 
 const app = express();
@@ -42,14 +43,7 @@ app.post("/pedidos", async (req, res) => {
 
   guardarPedidos(pedidos);
 
-  try {
-    console.log("📤 Enviando confirmación...");
-    await sendConfirmation(nuevoPedido);
-    console.log("✅ Confirmación enviada");
-  } catch (error) {
-    console.error("❌ Error enviando confirmación:");
-    console.error(error);
-  }
+  await sendConfirmation(nuevoPedido);
 
   res.json(nuevoPedido);
 });
@@ -77,7 +71,7 @@ app.put("/pedidos/:id", (req, res) => {
   res.json(pedidos[idx]);
 });
 
-app.put("/pedidos/:id/estado/:estado", (req, res) => {
+app.put("/pedidos/:id/estado/:estado", async (req, res) => {
   const pedidos = leerPedidos();
 
   const pedido = pedidos.find((p) => String(p.id) === req.params.id);
@@ -91,6 +85,8 @@ app.put("/pedidos/:id/estado/:estado", (req, res) => {
   pedido.estado = req.params.estado;
 
   guardarPedidos(pedidos);
+
+  await sendStateChange(pedido);
 
   res.json(pedido);
 });
