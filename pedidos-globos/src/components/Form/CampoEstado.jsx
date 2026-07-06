@@ -2,6 +2,7 @@ export default function CampoEstado({ value, onChange }) {
   const colores = {
     Agendado: "text-yellow-700 bg-yellow-50 border-yellow-200",
     "Listo para recoger": "text-blue-700 bg-blue-50 border-blue-200",
+    Enviado: "text-blue-700 bg-blue-50 border-blue-200",
     Entregado: "text-green-700 bg-green-50 border-green-200",
   };
 

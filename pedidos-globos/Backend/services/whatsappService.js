@@ -3,10 +3,10 @@ import qrcode from "qrcode-terminal";
 import pino from "pino";
 import { orderConfirmation } from "./messages/orderConfirmation.js";
 import { eventConfirmation } from "./messages/eventConfirmation.js";
-import { readyToPickUp } from "./messages/readyToPickUp.js";
+import { readyToPickup } from "./messages/readyToPickUp.js";
 import { readyToShip } from "./messages/readyToShip.js";
 import { onItsWay } from "./messages/onItsWay.js";
-import { delivered } from "./messages/delivered.js";
+import { delivered } from "./messages/Delivered.js";
 
 let sock;
 
@@ -61,7 +61,7 @@ export async function sendStateChange(pedido) {
       const message =
         pedido.lugar === "Servicio a domicilio"
           ? readyToShip(pedido)
-          : readyToPickUp(pedido);
+          : readyToPickup(pedido);
       await sendMessage(pedido.telefono, message);
       break;
     }

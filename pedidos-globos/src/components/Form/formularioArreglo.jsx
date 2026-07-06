@@ -129,8 +129,8 @@ export default function FormularioArreglo({ form, handleChange }) {
           Extras
         </label>
         <CampoComentario
-          name="descripcion"
-          value={form.descripcion}
+          name="extra"
+          value={form.extra}
           placeholder="Colores, tamaño, tipo de globos..."
           onChange={handleChange}
         />

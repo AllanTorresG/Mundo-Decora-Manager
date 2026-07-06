@@ -5,6 +5,8 @@ import DetallePedido from "../../components/DetallePedido";
 import ConfirmarEstado from "../../components/ConfirmarEstado";
 
 function calcularUrgencia(pedido, ahora) {
+  if (pedido.estado !== "Agendado") return "normal";
+
   if (pedido.tipoPedido === "arreglo") {
     const [h, m] = (pedido.horaEntrega || "0:0").split(":").map(Number);
     const entrega = new Date(

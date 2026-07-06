@@ -1,5 +1,5 @@
 export function delivered(pedido) {
-  `🎈 Tu ${pedido.tipoArreglo} fue entregado
+  return `🎈 Tu ${pedido.tipoArreglo} fue entregado
 
   ¡Muchas gracias por confiar en Mundo Decora!
 

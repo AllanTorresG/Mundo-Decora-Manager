@@ -1,5 +1,5 @@
-export function readyToPickup(pedido) {
-  return `🎈 ¡Hola ${pedido.cliente}!
+export function readyToPickup() {
+  return `🎈 ¡Hola!
 
 Tu pedido ya está listo para recoger.
 

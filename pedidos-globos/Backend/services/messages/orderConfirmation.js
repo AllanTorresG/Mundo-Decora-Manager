@@ -1,5 +1,5 @@
 export function orderConfirmation(pedido) {
-  return `🎈 *¡Hola ${pedido.cliente}!*
+  return `  🎈 *¡Hola ${pedido.cliente}!*
 
         Tu pedido ha sido agendado correctamente.
         *Por favor verifica si los datos son correctos.*
@@ -8,7 +8,7 @@ export function orderConfirmation(pedido) {
         🕒 *Hora de entrega:* ${pedido.horaEntrega} hrs
 
         🎁 *Pedido:*
-        ${pedido.tipoArreglo} ${pedido.size} rellenado con ${pedido.tipoGas},
+        ${pedido.tipoArreglo} ${pedido.size} con ${pedido.tipoGas},
         lleva el texto ${pedido.leyenda} y los colores ${pedido.colores}
 
           ${
@@ -19,7 +19,7 @@ export function orderConfirmation(pedido) {
 
         💰 *Total:* $${pedido.costo}
         💵 *Anticipo:* $${pedido.anticipo}
-        💰 *Deben:* $${pedido.costo - pedido.anticipo}
+        💰 *Resta:* $${pedido.costo - pedido.anticipo}
 
         ${
           pedido.lugar === "Servicio a domicilio"

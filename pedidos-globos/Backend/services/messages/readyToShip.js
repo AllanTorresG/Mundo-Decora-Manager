@@ -1,5 +1,5 @@
 export function readyToShip(pedido) {
-  return `🎈 ¡Hola ${pedido.cliente}!
+  return `🎈 ¡Hola!
 
 📍Tu pedido ya está listo para ser enviado a ${pedido.direccion}
 
