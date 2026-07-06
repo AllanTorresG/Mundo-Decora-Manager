@@ -66,7 +66,7 @@ export async function sendStateChange(pedido) {
       break;
     }
 
-    case "Enviado":
+    case "Send":
       await sendMessage(pedido.telefono, onItsWay(pedido));
       break;
 

@@ -1,6 +1,9 @@
+import CampoEstado from "./Form/CampoEstado";
+
 const ESTADO_COLORS = {
   Agendado: "bg-yellow-100 text-yellow-800",
   "Listo para recoger": "bg-blue-100 text-blue-800",
+  Send: "bg-orange-100 text-orange-700",
   Entregado: "bg-green-100 text-green-700",
 };
 
@@ -158,15 +161,10 @@ export default function DetallePedido({ pedido, cerrar, editarPedido, cambiarEst
           <div>
             <span className="block text-sm font-medium text-gray-500 mb-1">Estado</span>
             {cambiarEstado ? (
-              <select
+              <CampoEstado
                 value={pedido.estado}
                 onChange={(e) => cambiarEstado(pedido.id, e.target.value)}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent outline-none text-gray-800 bg-white"
-              >
-                <option value="Agendado">Agendado</option>
-                <option value="Listo para recoger">Listo para recoger</option>
-                <option value="Entregado">Entregado</option>
-              </select>
+              />
             ) : (
               <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium ${ESTADO_COLORS[pedido.estado] || "bg-gray-100 text-gray-700"}`}>
                 {pedido.estado}

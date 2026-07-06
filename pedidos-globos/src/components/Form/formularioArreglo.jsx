@@ -47,9 +47,10 @@ export default function FormularioArreglo({ form, handleChange }) {
           className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent outline-none transition text-gray-800 bg-white"
         >
           <option value="">Seleccionar</option>
-          <option value="Globo burbuja">Globo burbuja</option>
-          <option value="Bouquet">Bouquet</option>
-          <option value="Arreglo con regalo">Arreglo con regalo</option>
+          <option value="globo burbuja">Globo burbuja</option>
+          <option value="bouquet">Bouquet</option>
+          <option value="arreglo con regalo">Arreglo con regalo</option>
+          <option value="globo de figura">Globo de figura</option>
         </select>
       </div>
 

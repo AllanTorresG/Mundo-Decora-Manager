@@ -1,5 +1,5 @@
 import { useState } from "react";
-import CampoEstado from "../Form/CampoEstado";
+import CampoEstado, { COLORES_ESTADO } from "../Form/CampoEstado";
 
 const URGENCIA_COLORS = {
   critical: "border-l-red-500 bg-red-50/40",
@@ -77,6 +77,7 @@ export default function ArregloTable({
         className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium
         ${pedido.estado === "Agendado" ? "bg-yellow-100 text-yellow-800" : ""}
         ${pedido.estado === "Listo para recoger" ? "bg-blue-100 text-blue-800" : ""}
+        ${pedido.estado === "Send" ? "bg-orange-100 text-orange-700" : ""}
         ${pedido.estado === "Entregado" ? "bg-green-100 text-green-700" : ""}
       `}
       >
@@ -103,23 +104,18 @@ export default function ArregloTable({
                   {pedido.cliente}
                 </span>
                 {cambiarEstado ? (
-                  <select
-                    value={pedido.estado}
-                    onClick={(e) => e.stopPropagation()}
-                    onChange={(e) => cambiarEstado(pedido.id, e.target.value)}
-                    className="text-xs px-2 py-1 rounded-lg border border-gray-200 bg-white text-gray-700 outline-none focus:ring-2 focus:ring-purple-400 cursor-pointer"
-                  >
-                    <option value="Agendado">Agendado</option>
-                    <option value="Listo para recoger">
-                      Listo para recoger
-                    </option>
-                    <option value="Entregado">Entregado</option>
-                  </select>
+                  <div className="w-28" onClick={(e) => e.stopPropagation()}>
+                    <CampoEstado
+                      value={pedido.estado}
+                      onChange={(e) => cambiarEstado(pedido.id, e.target.value)}
+                    />
+                  </div>
                 ) : (
                   <span
                     className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium
                     ${pedido.estado === "Agendado" ? "bg-yellow-100 text-yellow-800" : ""}
                     ${pedido.estado === "Listo para recoger" ? "bg-blue-100 text-blue-800" : ""}
+                    ${pedido.estado === "Send" ? "bg-orange-100 text-orange-700" : ""}
                     ${pedido.estado === "Entregado" ? "bg-green-100 text-green-700" : ""}
                   `}
                   >
