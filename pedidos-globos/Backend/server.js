@@ -7,6 +7,8 @@ import {
   sendStateChange,
 } from "./services/whatsappService.js";
 
+import crypto from "crypto";
+
 const app = express();
 
 app.use(cors());
@@ -31,11 +33,18 @@ app.get("/pedidos", (req, res) => {
   res.json(leerPedidos());
 });
 
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    timestamp: Date.now(),
+  });
+});
+
 app.post("/pedidos", async (req, res) => {
   const pedidos = leerPedidos();
 
   const nuevoPedido = {
-    id: Date.now(),
+    id: req.body.id ?? crypto.randomUUID(),
     ...req.body,
   };
 
@@ -43,9 +52,10 @@ app.post("/pedidos", async (req, res) => {
 
   guardarPedidos(pedidos);
 
-  await sendConfirmation(nuevoPedido);
-
   res.json(nuevoPedido);
+  sendConfirmation(nuevoPedido).catch((error) => {
+    console.error("Error enviando WhatsApp:", error);
+  });
 });
 
 app.delete("/pedidos/:id", (req, res) => {

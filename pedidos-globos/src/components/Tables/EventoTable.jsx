@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { formatDate } from "../../utils/formatDate";
 
 const URGENCIA_COLORS = {
   critical: "border-l-red-500 bg-red-50/40",
@@ -24,24 +25,45 @@ export default function EventoTable({ pedidos, eliminarPedido, editarPedido, onV
     }));
   };
 
+  const timeToMinutes = (time) => {
+    if (!time) return -1;
+    const [h, m] = time.split(":").map(Number);
+    if (isNaN(h) || isNaN(m)) return -1;
+    return h * 60 + m;
+  };
+
   const sorted = [...pedidos].sort((a, b) => {
+    const compare = (aVal, bVal) => {
+      if (aVal == null && bVal == null) return 0;
+      if (aVal == null) return 1;
+      if (bVal == null) return -1;
+      return typeof aVal === "string" ? aVal.localeCompare(bVal) : aVal - bVal;
+    };
+
     let aVal = a[sortConfig.key];
     let bVal = b[sortConfig.key];
 
     if (sortConfig.key === "restante") {
       aVal = Number(a.costo) - Number(a.anticipo);
       bVal = Number(b.costo) - Number(b.anticipo);
-    }
-    if (sortConfig.key === "costo" || sortConfig.key === "anticipo") {
+    } else if (sortConfig.key === "costo" || sortConfig.key === "anticipo") {
       aVal = Number(aVal);
       bVal = Number(bVal);
+    } else if (sortConfig.key === "horaEntrada" || sortConfig.key === "horaInicio") {
+      aVal = timeToMinutes(aVal);
+      bVal = timeToMinutes(bVal);
+    } else {
+      if (aVal == null) aVal = "";
+      if (bVal == null) bVal = "";
     }
 
-    if (aVal == null) aVal = "";
-    if (bVal == null) bVal = "";
+    let cmp = compare(aVal, bVal);
+    if (cmp !== 0) return sortConfig.direction === "asc" ? cmp : -cmp;
 
-    const cmp = typeof aVal === "string" ? aVal.localeCompare(bVal) : aVal - bVal;
-    return sortConfig.direction === "asc" ? cmp : -cmp;
+    cmp = compare(a.fecha, b.fecha);
+    if (cmp !== 0) return cmp;
+
+    return timeToMinutes(a.horaEntrada) - timeToMinutes(b.horaEntrada);
   });
 
   const SortIcon = ({ colKey }) => {
@@ -66,7 +88,7 @@ export default function EventoTable({ pedidos, eliminarPedido, editarPedido, onV
                 <span className="font-semibold text-gray-800">{pedido.cliente}</span>
               </div>
               <div className="text-sm text-gray-600 space-y-0.5">
-                <div>{pedido.fecha}</div>
+                <div>{formatDate(pedido.fecha)}</div>
                 <div className="text-gray-500 truncate">{pedido.descripcion}</div>
               </div>
             </div>
@@ -145,7 +167,7 @@ export default function EventoTable({ pedidos, eliminarPedido, editarPedido, onV
                       <span>{pedido.telefono}</span>
                     </a>
                   </td>
-                  <td className="px-5 py-3.5 text-gray-700 whitespace-nowrap">{pedido.fecha}</td>
+                  <td className="px-5 py-3.5 text-gray-700 whitespace-nowrap">{formatDate(pedido.fecha)}</td>
                   <td className="px-5 py-3.5 text-gray-700 whitespace-nowrap">{pedido.horaEntrada}</td>
                   <td className="px-5 py-3.5 text-gray-700 whitespace-nowrap">{pedido.horaInicio}</td>
                   <td className="px-5 py-3.5 text-gray-600 whitespace-normal min-w-[220px]">{pedido.descripcion}</td>

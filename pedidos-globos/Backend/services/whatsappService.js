@@ -7,6 +7,8 @@ import { readyToPickup } from "./messages/readyToPickUp.js";
 import { readyToShip } from "./messages/readyToShip.js";
 import { onItsWay } from "./messages/onItsWay.js";
 import { delivered } from "./messages/Delivered.js";
+import { orderConfirmationFoil } from "./messages/orderConfirmationFoil.js";
+import { orderConfirmationPorra } from "./messages/orderConfirmationPorra.js";
 
 let sock;
 
@@ -47,12 +49,19 @@ export async function sendMessage(numero, mensaje) {
 }
 
 export async function sendConfirmation(pedido) {
-  const mensaje =
-    pedido.tipoPedido === "arreglo"
-      ? orderConfirmation(pedido)
-      : eventConfirmation(pedido);
+  if (pedido.tipoPedido === "evento") {
+    return sendMessage(pedido.telefono, eventConfirmation(pedido));
+  }
 
-  await sendMessage(pedido.telefono, mensaje);
+  if (pedido.tipoArreglo === "carita para porra") {
+    return sendMessage(pedido.telefono, orderConfirmationPorra(pedido));
+  }
+
+  if (pedido.tipoArreglo === "globos foil") {
+    return sendMessage(pedido.telefono, orderConfirmationFoil(pedido));
+  }
+
+  return sendMessage(pedido.telefono, orderConfirmation(pedido));
 }
 
 export async function sendStateChange(pedido) {

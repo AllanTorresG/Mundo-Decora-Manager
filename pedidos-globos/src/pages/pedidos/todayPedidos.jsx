@@ -3,6 +3,8 @@ import ArregloTable from "../../components/Tables/ArregloTable";
 import EventoTable from "../../components/Tables/EventoTable";
 import DetallePedido from "../../components/DetallePedido";
 import ConfirmarEstado from "../../components/ConfirmarEstado";
+import { formatDate } from "../../utils/formatDate";
+import { getOrders } from "../../services/ordersApi";
 
 function calcularUrgencia(pedido, ahora) {
   if (pedido.estado !== "Agendado") return "normal";
@@ -64,56 +66,60 @@ export default function PedidosDeHoy() {
     return h * 60 + m;
   };
 
-  const cargarPedidos = () => {
-    fetch("http://100.106.133.33:3001/pedidos")
-      .then((r) => r.json())
-      .then((data) => {
-        const ahora = new Date();
+  const cargarPedidos = async () => {
+    const data = await getOrders();
 
-        const arreglosUrgentes = data
-          .filter((pedido) => {
-            if (pedido.tipoPedido === "arreglo" && pedido.fecha === fechaHoy) {
-              return true;
-            }
+    const ahora = new Date();
 
-            if (
-              pedido.tipoPedido === "arreglo" &&
-              pedido.fecha === fechaMañana &&
-              pedido.horaEntrega &&
-              horaAMinutos(pedido.horaEntrega) < horaAMinutos("12:00")
-            ) {
-              return true;
-            }
+    const arreglosUrgentes = data
+      .filter((pedido) => {
+        if (pedido.tipoPedido === "arreglo" && pedido.fecha === fechaHoy) {
+          return true;
+        }
 
-            return false;
-          })
-          .map((p) => ({ ...p, urgencia: calcularUrgencia(p, ahora) }));
+        if (
+          pedido.tipoPedido === "arreglo" &&
+          pedido.fecha === fechaMañana &&
+          pedido.horaEntrega &&
+          horaAMinutos(pedido.horaEntrega) < horaAMinutos("12:00")
+        ) {
+          return true;
+        }
 
-        const eventosSemana = data
-          .filter((pedido) => {
-            return (
-              pedido.tipoPedido === "evento" &&
-              pedido.fecha >= fechaHoy &&
-              pedido.fecha <= fechaSemana
-            );
-          })
-          .map((p) => ({ ...p, urgencia: calcularUrgencia(p, ahora) }));
+        return false;
+      })
+      .map((p) => ({
+        ...p,
+        urgencia: calcularUrgencia(p, ahora),
+      }));
 
-        arreglosUrgentes.sort((a, b) => {
-          const fechaHoraA = new Date(`${a.fecha}T${a.horaEntrega || "00:00"}`);
-          const fechaHoraB = new Date(`${b.fecha}T${b.horaEntrega || "00:00"}`);
-          return fechaHoraA - fechaHoraB;
-        });
+    const eventosSemana = data
+      .filter((pedido) => {
+        return (
+          pedido.tipoPedido === "evento" &&
+          pedido.fecha >= fechaHoy &&
+          pedido.fecha <= fechaSemana
+        );
+      })
+      .map((p) => ({
+        ...p,
+        urgencia: calcularUrgencia(p, ahora),
+      }));
 
-        eventosSemana.sort((a, b) => {
-          const fechaHoraA = new Date(`${a.fecha}T${a.horaEntrada || "00:00"}`);
-          const fechaHoraB = new Date(`${b.fecha}T${b.horaEntrada || "00:00"}`);
-          return fechaHoraA - fechaHoraB;
-        });
+    arreglosUrgentes.sort((a, b) => {
+      const fechaHoraA = new Date(`${a.fecha}T${a.horaEntrega || "00:00"}`);
+      const fechaHoraB = new Date(`${b.fecha}T${b.horaEntrega || "00:00"}`);
+      return fechaHoraA - fechaHoraB;
+    });
 
-        setArreglos(arreglosUrgentes);
-        setEventos(eventosSemana);
-      });
+    eventosSemana.sort((a, b) => {
+      const fechaHoraA = new Date(`${a.fecha}T${a.horaEntrada || "00:00"}`);
+      const fechaHoraB = new Date(`${b.fecha}T${b.horaEntrada || "00:00"}`);
+      return fechaHoraA - fechaHoraB;
+    });
+
+    setArreglos(arreglosUrgentes);
+    setEventos(eventosSemana);
   };
 
   const cambiarEstado = async (id, estado) => {
@@ -277,7 +283,7 @@ export default function PedidosDeHoy() {
                 🎉 Eventos de la semana
               </h2>
               <p className="text-sm text-gray-500">
-                Del {fechaHoy} al {fechaSemana}
+                Del {formatDate(fechaHoy)} al {formatDate(fechaSemana)}
               </p>
             </div>
             <div className="flex gap-2 text-xs flex-wrap">

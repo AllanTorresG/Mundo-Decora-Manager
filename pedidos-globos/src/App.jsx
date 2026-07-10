@@ -7,10 +7,12 @@ import PedidosDeHoy from "./pages/pedidos/todayPedidos";
 import NuevoPedido from "./pages/pedidos/newPedidos";
 import TodosLosPedidos from "./pages/pedidos/allPedidos";
 import Pedidos from "./pages/pedidos/pedidos";
+import SyncManager from "./components/SyncManager";
 
 function App() {
   return (
     <BrowserRouter>
+      <SyncManager />
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />

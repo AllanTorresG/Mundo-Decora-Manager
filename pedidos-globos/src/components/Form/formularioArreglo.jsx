@@ -49,12 +49,14 @@ export default function FormularioArreglo({ form, handleChange }) {
           <option value="">Seleccionar</option>
           <option value="globo burbuja">Globo burbuja</option>
           <option value="bouquet">Bouquet</option>
-          <option value="arreglo con regalo">Arreglo con regalo</option>
+          <option value="caja personalizada">Caja personalizada</option>
           <option value="globo de figura">Globo de figura</option>
+          <option value="carita para porra">Carita para porra</option>
+          <option value="globos foil">Globos foil</option>
         </select>
       </div>
 
-      {form.tipoArreglo === "Globo burbuja" && (
+      {form.tipoArreglo === "globo burbuja" && (
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Tamaño del globo burbuja
@@ -96,34 +98,55 @@ export default function FormularioArreglo({ form, handleChange }) {
           <option value="">Seleccionar</option>
           <option value="Aire">Aire</option>
           <option value="Helio">Helio</option>
+          <option value="No Aplica">No Aplica</option>
         </select>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Leyenda
-        </label>
-        <CampoTexto
-          name="leyenda"
-          value={form.leyenda}
-          placeholder="Texto de la leyenda..."
-          onChange={handleChange}
-          required
-        />
-      </div>
+      {(form.tipoArreglo === "globo burbuja" ||
+        form.tipoArreglo === "caja personalizada" ||
+        form.tipoArreglo === "carita para porra") && (
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Leyenda
+          </label>
+          <CampoTexto
+            name="leyenda"
+            value={form.leyenda}
+            placeholder="Texto de la leyenda..."
+            onChange={handleChange}
+            required
+          />
+        </div>
+      )}
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Colores
-        </label>
-        <CampoTexto
-          name="colores"
-          value={form.colores}
-          placeholder="Colores del arreglo..."
-          onChange={handleChange}
-          required
-        />
-      </div>
+      {form.tipoArreglo !== "globos foil" && (
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Colores
+          </label>
+          <CampoTexto
+            name="colores"
+            value={form.colores}
+            placeholder="Colores del arreglo..."
+            onChange={handleChange}
+            required
+          />
+        </div>
+      )}
+
+      {form.tipoArreglo === "globos foil" && (
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Descripción
+          </label>
+          <CampoComentario
+            name="descripcion"
+            value={form.descripcion}
+            placeholder="Describe los globos..."
+            onChange={handleChange}
+          />
+        </div>
+      )}
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">

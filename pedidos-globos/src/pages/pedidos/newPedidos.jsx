@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import PedidoForm from "../../components/Form/pedidoForm";
+import { createOrder } from "../../services/ordersApi";
 
 const INITIAL_FORM = {
   cliente: "",
@@ -71,19 +72,19 @@ export default function NuevoPedido() {
   const guardarPedido = async (e) => {
     e.preventDefault();
 
-    const response = await fetch("http://100.106.133.33:3001/pedidos", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(form),
-    });
+    try {
+      const order = {
+        ...form,
+        id: crypto.randomUUID(),
+      };
+      await createOrder(order);
 
-    await response.json();
+      alert("Pedido guardado");
 
-    alert("Pedido guardado");
-
-    setForm(INITIAL_FORM);
+      setForm(INITIAL_FORM);
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return (

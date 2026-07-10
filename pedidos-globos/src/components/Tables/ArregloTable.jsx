@@ -1,5 +1,6 @@
 import { useState } from "react";
 import CampoEstado, { COLORES_ESTADO } from "../Form/CampoEstado";
+import { formatDate } from "../../utils/formatDate";
 
 const URGENCIA_COLORS = {
   critical: "border-l-red-500 bg-red-50/40",
@@ -23,7 +24,7 @@ export default function ArregloTable({
   onVerDetalle,
 }) {
   const [sortConfig, setSortConfig] = useState({
-    key: "horaEntrega",
+    key: "fecha",
     direction: "asc",
   });
 
@@ -34,25 +35,45 @@ export default function ArregloTable({
     }));
   };
 
+  const timeToMinutes = (time) => {
+    if (!time) return -1;
+    const [h, m] = time.split(":").map(Number);
+    if (isNaN(h) || isNaN(m)) return -1;
+    return h * 60 + m;
+  };
+
   const sorted = [...pedidos].sort((a, b) => {
+    const compare = (aVal, bVal) => {
+      if (aVal == null && bVal == null) return 0;
+      if (aVal == null) return 1;
+      if (bVal == null) return -1;
+      return typeof aVal === "string" ? aVal.localeCompare(bVal) : aVal - bVal;
+    };
+
     let aVal = a[sortConfig.key];
     let bVal = b[sortConfig.key];
 
     if (sortConfig.key === "restante") {
       aVal = Number(a.costo) - Number(a.anticipo);
       bVal = Number(b.costo) - Number(b.anticipo);
-    }
-    if (sortConfig.key === "costo" || sortConfig.key === "anticipo") {
+    } else if (sortConfig.key === "costo" || sortConfig.key === "anticipo") {
       aVal = Number(aVal);
       bVal = Number(bVal);
+    } else if (sortConfig.key === "horaEntrega") {
+      aVal = timeToMinutes(aVal);
+      bVal = timeToMinutes(bVal);
+    } else {
+      if (aVal == null) aVal = "";
+      if (bVal == null) bVal = "";
     }
 
-    if (aVal == null) aVal = "";
-    if (bVal == null) bVal = "";
+    let cmp = compare(aVal, bVal);
+    if (cmp !== 0) return sortConfig.direction === "asc" ? cmp : -cmp;
 
-    const cmp =
-      typeof aVal === "string" ? aVal.localeCompare(bVal) : aVal - bVal;
-    return sortConfig.direction === "asc" ? cmp : -cmp;
+    cmp = compare(a.fecha, b.fecha);
+    if (cmp !== 0) return cmp;
+
+    return timeToMinutes(a.horaEntrega) - timeToMinutes(b.horaEntrega);
   });
 
   const SortIcon = ({ colKey }) => {
@@ -125,7 +146,7 @@ export default function ArregloTable({
               </div>
               <div className="text-sm text-gray-600 space-y-0.5">
                 <div>
-                  {pedido.fecha} {pedido.horaEntrega}
+                  {formatDate(pedido.fecha)} {pedido.horaEntrega}
                 </div>
                 <div className="text-gray-500 truncate">
                   {pedido.descripcion}
@@ -319,7 +340,7 @@ export default function ArregloTable({
                     </a>
                   </td>
                   <td className="px-5 py-3.5 text-gray-700 whitespace-nowrap">
-                    {pedido.fecha}
+                    {formatDate(pedido.fecha)}
                   </td>
                   <td className="px-5 py-3.5 text-gray-700 whitespace-nowrap">
                     {pedido.horaEntrega}

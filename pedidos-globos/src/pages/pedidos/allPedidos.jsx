@@ -5,6 +5,7 @@ import ConfirmarEstado from "../../components/ConfirmarEstado";
 import EditarPedido from "../../components/EditarPedido";
 import ArregloTable from "../../components/Tables/ArregloTable";
 import EventoTable from "../../components/Tables/EventoTable";
+import { getOrders } from "../../services/ordersApi";
 
 export default function TodosLosPedidos() {
   const [pedidos, setPedidos] = useState([]);
@@ -27,11 +28,7 @@ export default function TodosLosPedidos() {
       method: "PUT",
     });
 
-    const response = await fetch(`http://100.106.133.33:3001/pedidos`);
-
-    const data = await response.json();
-
-    setPedidos(data);
+    await loadOrders();
   };
 
   const confirmarCambioEstado = async (id, estado) => {
@@ -39,15 +36,16 @@ export default function TodosLosPedidos() {
       method: "PUT",
     });
     setConfirmacionEstado(null);
-    const response = await fetch(`http://100.106.133.33:3001/pedidos`);
-    const data = await response.json();
+    await loadOrders();
+  };
+
+  const loadOrders = async () => {
+    const data = await getOrders();
     setPedidos(data);
   };
 
   useEffect(() => {
-    fetch("http://100.106.133.33:3001/pedidos")
-      .then((r) => r.json())
-      .then(setPedidos);
+    loadOrders();
   }, []);
 
   const pedidosFiltrados = filtroFecha
@@ -75,21 +73,19 @@ export default function TodosLosPedidos() {
 
     setPedidoEditando(null);
 
-    const response = await fetch("http://100.106.133.33:3001/pedidos");
-    const nuevos = await response.json();
-    setPedidos(nuevos);
+    await loadOrders();
   };
 
   arreglos.sort((a, b) => {
     const fechaHoraA = new Date(`${a.fecha}T${a.horaEntrega || "00:00"}`);
-    const fechaHoraB = new Date(`${b.fecha}T${b.horaEntrada || "00:00"}`);
+    const fechaHoraB = new Date(`${b.fecha}T${b.horaEntrega || "00:00"}`);
 
     return fechaHoraA - fechaHoraB;
   });
 
   eventos.sort((a, b) => {
-    const fechaHoraA = new Date(`${a.fecha}`);
-    const fechaHoraB = new Date(`${b.fecha}`);
+    const fechaHoraA = new Date(`${a.fecha}T${a.horaEntrada || "00:00"}`);
+    const fechaHoraB = new Date(`${b.fecha}T${b.horaEntrada || "00:00"}`);
 
     return fechaHoraA - fechaHoraB;
   });
@@ -104,13 +100,17 @@ export default function TodosLosPedidos() {
         >
           <span>🔽 Filtrar</span>
           {filtroFecha && (
-            <span className="text-xs text-purple-600 bg-purple-50 px-2 py-0.5 rounded-full">1 activo</span>
+            <span className="text-xs text-purple-600 bg-purple-50 px-2 py-0.5 rounded-full">
+              1 activo
+            </span>
           )}
         </button>
         {filtroAbierto && (
           <div className="mt-2 bg-white rounded-xl border border-gray-200 shadow-sm p-3 space-y-2">
             <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">Fecha</label>
+              <label className="block text-sm font-medium text-gray-600 mb-1">
+                Fecha
+              </label>
               <input
                 type="date"
                 value={filtroFecha}
@@ -120,7 +120,10 @@ export default function TodosLosPedidos() {
             </div>
             {filtroFecha && (
               <button
-                onClick={() => { setFiltroFecha(""); setFiltroAbierto(false); }}
+                onClick={() => {
+                  setFiltroFecha("");
+                  setFiltroAbierto(false);
+                }}
                 className="text-sm text-red-500 hover:text-red-700 font-medium cursor-pointer"
               >
                 Limpiar filtros
@@ -132,7 +135,9 @@ export default function TodosLosPedidos() {
 
       {/* Desktop filter bar */}
       <div className="hidden md:inline-flex bg-white rounded-xl border border-gray-200 shadow-sm p-3 items-center gap-2 mb-12">
-        <span className="text-sm font-medium text-gray-700">📅 Filtrar por fecha</span>
+        <span className="text-sm font-medium text-gray-700">
+          📅 Filtrar por fecha
+        </span>
         <input
           type="date"
           value={filtroFecha}
@@ -177,7 +182,9 @@ export default function TodosLosPedidos() {
           <div>
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-lg font-bold text-gray-800">Arreglos</h2>
-              <p className="text-sm text-gray-500">{arreglos.length} pedido(s)</p>
+              <p className="text-sm text-gray-500">
+                {arreglos.length} pedido(s)
+              </p>
             </div>
             <ArregloTable
               pedidos={arreglos}
@@ -192,7 +199,9 @@ export default function TodosLosPedidos() {
           <div>
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-lg font-bold text-gray-800">Eventos</h2>
-              <p className="text-sm text-gray-500">{eventos.length} pedido(s)</p>
+              <p className="text-sm text-gray-500">
+                {eventos.length} pedido(s)
+              </p>
             </div>
             <EventoTable
               pedidos={eventos}
